@@ -1,0 +1,149 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// User mode
+model User {
+  id                  Int         @id @default(autoincrement())
+  identifier          String      @unique
+  walletAddress       String      @unique
+  email               String?
+  username            String?
+  image               String?
+  coverImage          String?
+  validationSignature String?
+  signature           String?
+  cookie              String?
+  staked              Float?      @default(0)
+  purchases           Purchases[] @relation("PurchasesToUser")
+  tier                Tier?       @relation(fields: [tierId], references: [id])
+  tierId              Int
+  projects            Project[]   @relation("ProjectToUser")
+  createdAt           DateTime    @default(now())
+  updatedAt           DateTime    @updatedAt
+}
+
+model ConnectUser {
+  id                  Int      @id @default(autoincrement())
+  identifier          String   @unique
+  walletAddress       String   @unique
+  validationSignature String
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+}
+
+model Project {
+  id             Int             @id @default(autoincrement())
+  user           User[]          @relation("ProjectToUser")
+  coverImage     String
+  contractId     Int             @default(1)
+  logo           String
+  name           String
+  address        String          @unique
+  slug           String          @unique
+  description    String
+  tokenDecimal   Int
+  tokenSymbol    String          @unique
+  icoRate        Float
+  icoCurrency    String
+  totalRaised    Float
+  marketCap      Float
+  socialChannels SocialChannels? @relation("ProjectToSocialChannels")
+  launchStatus   String
+  projectPhases  ProjectPhases?  @relation("ProjectToProjectPhases")
+  purchases      Purchases[]     @relation("PurchasesToProject")
+  tokenNetwork   String
+  icoNetwork     String
+  totalSales     Float
+  currentSupply  Float
+  vesting        Vesting?        @relation("ProjectToVesting")
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+}
+
+model SocialChannels {
+  id           Int      @id @default(autoincrement())
+  projectId    Int      @unique
+  twitterUrl   String?
+  telegramUrl  String?
+  websiteUrl   String?
+  instagramUrl String?
+  discordUrl   String?
+  facebookUrl  String?
+  threadsUrl   String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  project Project @relation("ProjectToSocialChannels", fields: [projectId], references: [id])
+}
+
+model ProjectPhases {
+  id                                Int      @id @default(autoincrement())
+  projectId                         Int      @unique
+  preSaleStartDate                  DateTime
+  preSaleEndDate                    DateTime
+  preSaleDuration                   Int
+  guaranteedBuyingPhaseStartDate    DateTime
+  guaranteedBuyingPhaseEndDate      DateTime
+  guaranteedBuyingPhaseDuration     Int
+  guaranteedBuyingPhaseParticipants Int
+  fcfsBuyingPhaseStartDate          DateTime
+  fcfsBuyingPhaseEndDate            DateTime
+  fcfsBuyingPhaseDuration           Int
+  fcfsBuyingPhaseParticipants       Int
+  claimingPhaseStartDate            DateTime
+  claimingPhaseParticipant          Int
+  createdAt                         DateTime @default(now())
+  updatedAt                         DateTime @updatedAt
+
+  project Project @relation("ProjectToProjectPhases", fields: [projectId], references: [id])
+}
+
+model Vesting {
+  id              Int      @id @default(autoincrement())
+  projectId       Int      @unique
+  tgePercentage   Int
+  cliffDuration   Int
+  vestingDuration Int
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  project Project @relation("ProjectToVesting", fields: [projectId], references: [id])
+}
+
+model Tier {
+  id              Int      @id @unique @default(autoincrement())
+  name            String
+  logo            String   @default("sample_url")
+  tokenAmount     Int
+  maxAllocation   Float
+  withdrawalDelay Int
+  users           User[]
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model Purchases {
+  id              Int      @id @default(autoincrement())
+  amount          Float
+  user            User     @relation("PurchasesToUser", fields: [userId], references: [id])
+  userId          Int
+  project         Project  @relation("PurchasesToProject", fields: [projectId], references: [id])
+  projectId       Int
+  purchasedTokens Float
+  purchaseAmount  Float
+  tgeVestedAmount Float
+  amountVested    Float
+  amountClaimed   Float
+  vestingWallet   String      @unique
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
