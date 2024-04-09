@@ -13,8 +13,9 @@ async function bootstrap() {
       "This documentation explains how to interact with Akugom's auth API.",
     )
     .setVersion('1.0')
-    .addServer('http://localhost:3001/', 'Local environment')
+    // .addServer('http://localhost:3001/', 'Local environment')
     // .addServer('https://staging.yourapi.com/', 'Staging')
+    .addServer('https://akugom.onrender.com/', 'Staging')
     // .addServer(
     //   'https://cloudax-oracle-9495f8c3897e.herokuapp.com/',
     //   'Production',
