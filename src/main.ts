@@ -8,9 +8,9 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.setGlobalPrefix('api');
   const options = new DocumentBuilder()
-    .setTitle('Cloudpad Admin API Documentation')
+    .setTitle("Akugom's first API Documentation")
     .setDescription(
-      'This documentation explains how to interact with the Cloudax Oracle API.',
+      "This documentation explains how to interact with Akugom's auth API.",
     )
     .setVersion('1.0')
     .addServer('http://localhost:3001/', 'Local environment')
@@ -19,7 +19,7 @@ async function bootstrap() {
     //   'https://cloudax-oracle-9495f8c3897e.herokuapp.com/',
     //   'Production',
     // )
-    .addTag('Cloudpad Admin Api')
+    // .addTag('Cloudpad Admin Api')
     .addBearerAuth(
       { type: 'http', scheme: 'bearer', bearerFormat: 'JWT' },
       'JWT',
