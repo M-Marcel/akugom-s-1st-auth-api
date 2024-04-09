@@ -1,10 +1,10 @@
 ## Project Name
 
- Cloudpad Launchpad
+ Akugom's first API
 
 ## Description
 
-The Cloudpad project aims to establish an arbitrium-based web3/crypto launchpad, providing users with the capability to vet and invest in web3/crypto projects.
+This documentation explains how to interact with Akugom's auth API
 
 ## Installation
 
